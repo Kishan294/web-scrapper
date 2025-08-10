@@ -6,8 +6,11 @@ import * as cheerio from "cheerio";
 
 const createScrapeJobSchema = z.object({
   url: z.string().url(),
+  selectionType: z.enum(["css", "xpath", "id", "tag"]).default("css"),
   selector: z.string().optional(),
   xpath: z.string().optional(),
+  elementId: z.string().optional(),
+  tagName: z.string().optional(),
   frequency: z.enum(["once", "daily", "weekly", "monthly"]),
   format: z.enum(["json", "csv", "html"]),
   name: z.string().optional(),
@@ -145,15 +148,53 @@ export const scraperRouter = createTRPCRouter({
 
         const $ = cheerio.load(response.data);
         let scrapedData: any[] = [];
+        let targetSelector = "";
 
-        if (job.selector) {
-          $(job.selector).each((i, element) => {
-            scrapedData.push({
-              text: $(element).text().trim(),
-              html: $(element).html(),
-              attributes: $(element).attr(),
+        // Determine the selector based on selection type
+        switch (job.selectionType) {
+          case "css":
+            targetSelector = job.selector || "";
+            break;
+          case "xpath":
+            // Note: Cheerio doesn't support XPath directly, but we can convert simple XPath to CSS
+            targetSelector = job.xpath || "";
+            break;
+          case "id":
+            targetSelector = job.elementId ? `#${job.elementId}` : "";
+            break;
+          case "tag":
+            targetSelector = job.tagName || "";
+            break;
+          default:
+            targetSelector = job.selector || "";
+        }
+
+        if (targetSelector) {
+          try {
+            $(targetSelector).each((i, element) => {
+              const $element = $(element);
+              scrapedData.push({
+                text: $element.text().trim(),
+                html: $element.html(),
+                attributes: $element.attr(),
+                tagName:
+                  element.type === "tag" ? (element as any).name : undefined,
+                id: $element.attr("id"),
+                className: $element.attr("class"),
+              });
             });
-          });
+          } catch (error) {
+            // If selector fails, fall back to default scraping
+            console.warn(`Selector "${targetSelector}" failed:`, error);
+            scrapedData = [
+              {
+                title: $("title").text(),
+                text: $("body").text().trim().substring(0, 1000),
+                url: job.url,
+                error: `Selector "${targetSelector}" failed`,
+              },
+            ];
+          }
         } else {
           // Default scraping - get all text content
           scrapedData = [

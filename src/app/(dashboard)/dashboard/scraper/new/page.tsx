@@ -20,8 +20,11 @@ import { motion } from 'framer-motion'
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   url: z.string().url('Please enter a valid URL'),
+  selectionType: z.enum(['css', 'xpath', 'id', 'tag']),
   selector: z.string().optional(),
   xpath: z.string().optional(),
+  elementId: z.string().optional(),
+  tagName: z.string().optional(),
   frequency: z.enum(['once', 'daily', 'weekly', 'monthly']),
   format: z.enum(['json', 'csv', 'html']),
   description: z.string().optional(),
@@ -38,8 +41,11 @@ export default function NewScraperPage() {
     defaultValues: {
       name: '',
       url: '',
+      selectionType: 'css',
       selector: '',
       xpath: '',
+      elementId: '',
+      tagName: '',
       frequency: 'once',
       format: 'json',
       description: '',
@@ -128,41 +134,109 @@ export default function NewScraperPage() {
                     )}
                   />
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="selectionType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Selection Method</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select how to target elements" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="css">CSS Selector</SelectItem>
+                            <SelectItem value="xpath">XPath</SelectItem>
+                            <SelectItem value="id">Element ID</SelectItem>
+                            <SelectItem value="tag">HTML Tag</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          Choose how you want to select elements from the page
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Conditional fields based on selection type */}
+                  {form.watch('selectionType') === 'css' && (
                     <FormField
                       control={form.control}
                       name="selector"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>CSS Selector (Optional)</FormLabel>
+                          <FormLabel>CSS Selector</FormLabel>
                           <FormControl>
-                            <Input placeholder=".product-title" {...field} />
+                            <Input placeholder=".product-title, .content, div.main" {...field} />
                           </FormControl>
                           <FormDescription>
-                            CSS selector to target specific elements
+                            CSS selector to target specific elements (e.g., .class-name, #id, div.container)
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
+                  )}
 
+                  {form.watch('selectionType') === 'xpath' && (
                     <FormField
                       control={form.control}
                       name="xpath"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>XPath (Optional)</FormLabel>
+                          <FormLabel>XPath Expression</FormLabel>
                           <FormControl>
-                            <Input placeholder="//div[@class='content']" {...field} />
+                            <Input placeholder="//div[@class='content']//p" {...field} />
                           </FormControl>
                           <FormDescription>
-                            XPath expression for element selection
+                            XPath expression for element selection (e.g., //div[@class='content'])
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
+                  )}
+
+                  {form.watch('selectionType') === 'id' && (
+                    <FormField
+                      control={form.control}
+                      name="elementId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Element ID</FormLabel>
+                          <FormControl>
+                            <Input placeholder="main-content" {...field} />
+                          </FormControl>
+                          <FormDescription>
+                            The ID of the element you want to scrape (without the # symbol)
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+
+                  {form.watch('selectionType') === 'tag' && (
+                    <FormField
+                      control={form.control}
+                      name="tagName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>HTML Tag Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="h1, p, div, article" {...field} />
+                          </FormControl>
+                          <FormDescription>
+                            HTML tag name to select (e.g., h1, p, div, article)
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
@@ -261,21 +335,37 @@ export default function NewScraperPage() {
               <CardHeader>
                 <CardTitle className="flex items-center text-sm">
                   <Code className="h-4 w-4 mr-2" />
-                  CSS Selector Help
+                  Selection Methods
                 </CardTitle>
               </CardHeader>
-              <CardContent className="text-sm space-y-2">
+              <CardContent className="text-sm space-y-3">
                 <div>
-                  <code className="bg-gray-100 px-2 py-1 rounded">.class-name</code>
-                  <p className="text-gray-600 mt-1">Select by class</p>
+                  <strong className="text-blue-600">CSS Selector</strong>
+                  <div className="mt-1 space-y-1">
+                    <code className="bg-gray-100 px-2 py-1 rounded text-xs">.class-name</code>
+                    <p className="text-gray-600 text-xs">Select by class</p>
+                  </div>
                 </div>
                 <div>
-                  <code className="bg-gray-100 px-2 py-1 rounded">#element-id</code>
-                  <p className="text-gray-600 mt-1">Select by ID</p>
+                  <strong className="text-green-600">Element ID</strong>
+                  <div className="mt-1 space-y-1">
+                    <code className="bg-gray-100 px-2 py-1 rounded text-xs">main-content</code>
+                    <p className="text-gray-600 text-xs">Select by unique ID</p>
+                  </div>
                 </div>
                 <div>
-                  <code className="bg-gray-100 px-2 py-1 rounded">h1, h2, p</code>
-                  <p className="text-gray-600 mt-1">Select by tag</p>
+                  <strong className="text-purple-600">HTML Tag</strong>
+                  <div className="mt-1 space-y-1">
+                    <code className="bg-gray-100 px-2 py-1 rounded text-xs">h1, p, div</code>
+                    <p className="text-gray-600 text-xs">Select by tag name</p>
+                  </div>
+                </div>
+                <div>
+                  <strong className="text-orange-600">XPath</strong>
+                  <div className="mt-1 space-y-1">
+                    <code className="bg-gray-100 px-2 py-1 rounded text-xs">{'//div[@class=\'content\']'}</code>
+                    <p className="text-gray-600 text-xs">Advanced XML path</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
