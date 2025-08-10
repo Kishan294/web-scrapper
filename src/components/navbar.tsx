@@ -53,6 +53,9 @@ export function Navbar() {
   const publicNavItems = [
     { href: '/#features', label: 'Features' },
     { href: '/#pricing', label: 'Pricing' },
+    { href: '/docs', label: 'Docs' },
+    { href: '/help', label: 'Help' },
+    { href: '/contact', label: 'Contact' },
   ]
 
   return (
