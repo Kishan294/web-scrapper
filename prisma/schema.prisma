@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  clerkId   String   @unique
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  scrapeJobs ScrapeJob[]
+
+  @@map("users")
+}
+
+model ScrapeJob {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String    @db.ObjectId
+  url         String
+  selector    String?
+  xpath       String?
+  frequency   String // "once", "daily", "weekly", "monthly"
+  format      String // "json", "csv", "html"
+  status      String    @default("pending") // "pending", "running", "completed", "failed"
+  name        String?
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  lastRunAt   DateTime?
+  nextRunAt   DateTime?
+
+  // Relations
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  results ScrapeResult[]
+
+  @@map("scrape_jobs")
+}
+
+model ScrapeResult {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  jobId     String   @db.ObjectId
+  data      Json
+  status    String // "success", "error"
+  error     String?
+  itemCount Int      @default(0)
+  createdAt DateTime @default(now())
+
+  // Relations
+  job ScrapeJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@map("scrape_results")
+}
