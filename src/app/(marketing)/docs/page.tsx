@@ -5,8 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
+
 import { motion } from 'framer-motion'
 import {
   Search,
@@ -166,9 +165,7 @@ export default function DocsPage() {
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Navbar />
-
+    <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Hero Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -355,7 +352,6 @@ export default function DocsPage() {
         </div>
       </section>
 
-      <Footer />
     </div>
   )
 }

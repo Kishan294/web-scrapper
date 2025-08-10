@@ -1,8 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
+
 import { motion } from 'framer-motion'
 import {
   Shield,
@@ -230,9 +230,7 @@ For EU residents, you may also contact our Data Protection Officer at: dpo@websc
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Navbar />
-
+    <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Hero Section */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -348,12 +346,12 @@ For EU residents, you may also contact our Data Protection Officer at: dpo@websc
                   >
                     Email Privacy Team
                   </a>
-                  <a
+                  <Link
                     href="/contact"
                     className="inline-flex items-center justify-center px-6 py-3 border border-white text-white rounded-lg font-medium hover:bg-white hover:text-green-600 transition-colors"
                   >
                     Contact Support
-                  </a>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
@@ -361,7 +359,6 @@ For EU residents, you may also contact our Data Protection Officer at: dpo@websc
         </div>
       </section>
 
-      <Footer />
     </div>
   )
 }

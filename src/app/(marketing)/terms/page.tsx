@@ -1,8 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
+
 import { motion } from 'framer-motion'
 import {
   FileText,
@@ -128,9 +128,7 @@ Phone: +1 (555) 123-4567`
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Navbar />
-
+    <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Hero Section */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -214,18 +212,18 @@ Phone: +1 (555) 123-4567`
                   Our legal team is here to help clarify any questions you may have.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a
+                  <Link
                     href="/contact"
                     className="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-600 rounded-lg font-medium hover:bg-gray-100 transition-colors"
                   >
                     Contact Legal Team
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="/help"
                     className="inline-flex items-center justify-center px-6 py-3 border border-white text-white rounded-lg font-medium hover:bg-white hover:text-blue-600 transition-colors"
                   >
                     Visit Help Center
-                  </a>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
@@ -233,7 +231,6 @@ Phone: +1 (555) 123-4567`
         </div>
       </section>
 
-      <Footer />
     </div>
   )
 }

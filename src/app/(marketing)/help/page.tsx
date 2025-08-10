@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
+
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search,
@@ -183,8 +183,6 @@ export default function HelpPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Navbar />
-
       {/* Hero Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -322,27 +320,29 @@ export default function HelpPage() {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
                     <Card className="overflow-hidden">
-                      <CardHeader
+                      <div
                         className="cursor-pointer hover:bg-gray-50 transition-colors"
                         onClick={() => toggleFaq(faq.id)}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="flex items-center space-x-2">
-                              {getPriorityIcon(faq.popularity)}
-                              <Badge variant="secondary" className="text-xs">
-                                {getPriorityLabel(faq.popularity)}
-                              </Badge>
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <div className="flex items-center space-x-2">
+                                {getPriorityIcon(faq.popularity)}
+                                <Badge variant="secondary" className="text-xs">
+                                  {getPriorityLabel(faq.popularity)}
+                                </Badge>
+                              </div>
+                              <CardTitle className="text-base">{faq.question}</CardTitle>
                             </div>
-                            <CardTitle className="text-base">{faq.question}</CardTitle>
+                            {expandedFaq === faq.id ? (
+                              <ChevronDown className="h-5 w-5 text-gray-400" />
+                            ) : (
+                              <ChevronRight className="h-5 w-5 text-gray-400" />
+                            )}
                           </div>
-                          {expandedFaq === faq.id ? (
-                            <ChevronDown className="h-5 w-5 text-gray-400" />
-                          ) : (
-                            <ChevronRight className="h-5 w-5 text-gray-400" />
-                          )}
-                        </div>
-                      </CardHeader>
+                        </CardHeader>
+                      </div>
                       <AnimatePresence>
                         {expandedFaq === faq.id && (
                           <motion.div
@@ -397,10 +397,10 @@ export default function HelpPage() {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                       <Button variant="secondary" asChild>
-                        <a href="/contact">Contact Support</a>
+                        <Link href="/contact">Contact Support</Link>
                       </Button>
                       <Button variant="outline" className="text-white border-white hover:bg-white hover:text-blue-600" asChild>
-                        <a href="/docs">Browse Documentation</a>
+                        <Link href="/docs">Browse Documentation</Link>
                       </Button>
                     </div>
                   </CardContent>
@@ -411,7 +411,7 @@ export default function HelpPage() {
         </div >
       </section >
 
-      <Footer />
+
     </div >
   )
 }

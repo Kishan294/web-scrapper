@@ -10,8 +10,6 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Navbar } from '@/components/navbar'
-import { Footer } from '@/components/footer'
 import { motion } from 'framer-motion'
 import { toast } from 'sonner'
 import {
@@ -36,7 +34,7 @@ const contactFormSchema = z.object({
 
 type ContactFormData = z.infer<typeof contactFormSchema>
 
-export default function ContactPage() {
+export default function ContactPageClient() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<ContactFormData>({
@@ -49,8 +47,9 @@ export default function ContactPage() {
     },
   })
 
-  const onSubmit = async (_data: ContactFormData) => {
+  const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true)
+    console.log('Form data:', data)
 
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 2000))
@@ -100,9 +99,7 @@ export default function ContactPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Navbar />
-
+    <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Hero Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -325,8 +322,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 }
