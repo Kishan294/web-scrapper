@@ -117,9 +117,6 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.1.11
-      '@types/cheerio':
-        specifier: ^1.0.0
-        version: 1.0.0
       '@types/node':
         specifier: ^20
         version: 20.19.10
@@ -1041,10 +1038,6 @@ packages:
 
   '@tybys/wasm-util@0.10.0':
     resolution: {integrity: sha512-VyyPYFlOMNylG45GoAe0xDoLwWuowvf92F9kySqzYh8vmYm7D2u4iUJKa1tOUpS70Ku13ASrOkS4ScXFsTaCNQ==}
-
-  '@types/cheerio@1.0.0':
-    resolution: {integrity: sha512-zAaImHWoh5RY2CLgU2mvg3bl2k3F65B0N5yphuII3ythFLPmJhL7sj1RDu6gSxcgqHlETbr/lhA2OBY+WF1fXQ==}
-    deprecated: This is a stub types definition. cheerio provides its own type definitions, so you do not need this installed.
 
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
@@ -3772,10 +3765,6 @@ snapshots:
     dependencies:
       tslib: 2.8.1
     optional: true
-
-  '@types/cheerio@1.0.0':
-    dependencies:
-      cheerio: 1.1.2
 
   '@types/estree@1.0.8': {}
 
